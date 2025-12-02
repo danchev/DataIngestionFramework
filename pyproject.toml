@@ -1,0 +1,105 @@
+[project]
+name = "data_ingestion"
+version = "0.0.0a0"
+description = "A data ingestion framework using Apache Beam."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "apache-beam[gcp]>=2.69.0",
+    "google-cloud-pubsub>=2.33.0",
+    "pyarrow>=22.0.0",
+    "pydantic>=2.12.5",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.13,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.extra-build-dependencies]
+numpy = ["setuptools>=80.9.0"]
+
+[tool.uv.build-backend]
+module-name = [
+    "audit",
+    "options",
+    "p_transforms",
+    "utility",
+    "dofns",
+    "input",
+    "output",
+]
+module-root = "."
+include = ["*.py"]
+
+[tool.uv]
+no-build-isolation-package = ["apache-beam"]
+override-dependencies = ["pyarrow==22.0.0", "numpy==2.3.5"]
+
+[dependency-groups]
+dev = [
+    "debugpy>=1.8.17",
+    "pyright>=1.1.407",
+    "refurb>=2.2.0",
+    "ruff>=0.14.7",
+    "ty>=0.0.1a26",
+    { include-group = "test" },
+    { include-group = "docs" },
+    { include-group = "commit" },
+]
+test = [
+    "pytest>=9.0.1",
+    "pytest-cov>=7.0.0",
+    "pytest-xdist>=3.8.0",
+    "pytest-asyncio>=1.3.0",
+]
+docs = [
+    "mkdocs>=1.6.1",
+    "mkdocs-glightbox>=0.5.1",
+    "mkdocs-material[imaging]>=9.6.22",
+    "mkdocstrings-python>=1.18.2",
+]
+commit = ["commitizen>=4.10.0", "pre-commit>=4.4.0"]
+
+[tool.ruff]
+fix = true
+show-fixes = true
+output-format = "full"
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "Q"]
+ignore = ["E203", "E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "audit",
+    "options",
+    "p_transforms",
+    "utility",
+    "dofns",
+    "input",
+    "output",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.pytest.ini_options]
+addopts = "-n auto"
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+
+[tool.mypy]
+custom_typeshed_dir = "typings"
+plugins = ["mypy_ruff"]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.1.0.alpha"
+tag_format = "$version"
+version_files = ["pyproject.toml:version"]
+update_changelog_on_bump = true
